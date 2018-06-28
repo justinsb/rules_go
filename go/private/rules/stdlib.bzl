@@ -48,10 +48,11 @@ def _stdlib_library_to_source(go, attr, source, merge):
     args.add(["-filter_buildid", filter_buildid.path])
     go.actions.write(root_file, "")
     env = go.env
+    prefixmap = "  -fdebug-prefix-map=/dev/shm=/shm"
     env.update({
         "CC": go.cgo_tools.compiler_executable,
-        "CGO_CPPFLAGS": " ".join(go.cgo_tools.compiler_options),
-        "CGO_CFLAGS": " ".join(go.cgo_tools.c_options),
+        "CGO_CPPFLAGS": " ".join(go.cgo_tools.compiler_options) + prefixmap,
+        "CGO_CFLAGS": " ".join(go.cgo_tools.c_options) + prefixmap,
         "CGO_LDFLAGS": " ".join(go.cgo_tools.linker_options),
     })
     go.actions.run(
