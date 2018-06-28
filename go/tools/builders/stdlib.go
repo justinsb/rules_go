@@ -66,7 +66,7 @@ func run(args []string) error {
 	os.Setenv("PATH", strings.Join(absPaths, string(os.PathListSeparator)))
 
 	// Build the commands needed to build the std library in the right mode
-	installArgs := goenv.goCmd("install", "-toolexec", abs(*filterBuildid))
+	installArgs := goenv.goCmd("install", "-x", "-toolexec", abs(*filterBuildid))
 	if len(build.Default.BuildTags) > 0 {
 		installArgs = append(installArgs, "-tags", strings.Join(build.Default.BuildTags, ","))
 	}
@@ -108,6 +108,8 @@ func run(args []string) error {
 	}
 
 	for _, target := range []string{"std", "runtime/cgo"} {
+		fmt.Printf("running %s %s\n", installArgs, target)
+		log.Printf("running %s %s\n", installArgs, target)
 		if err := goenv.runCommand(append(installArgs, target)); err != nil {
 			return err
 		}
