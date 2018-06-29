@@ -107,6 +107,15 @@ func run(args []string) error {
 		return fmt.Errorf("error modifying cgo environment to absolute path: %v", err)
 	}
 
+	{
+		cgoFlags := os.Getenv("CGO_CFLAGS")
+		cgoFlags += " -g -O2"
+		cgoFlags += " -fdebug-prefix-map=" + abs(".") + "=."
+		if err := os.Setenv("CGO_CFLAGS", cgoFlags); err != nil {
+			return err
+		}
+	}
+
 	for _, target := range []string{"std", "runtime/cgo"} {
 		if err := goenv.runCommand(append(installArgs, target)); err != nil {
 			return err
